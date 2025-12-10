@@ -37,7 +37,7 @@ export const getOptions = (app: Application): MongoDBAdapterOptions => {
           await collection.dropIndex('createdAt_1')
           await collection.createIndex(
             { createdAt: 1 }, 
-            { expireAfterSeconds: 3600 } // 1 hour
+            { expireAfterSeconds: 1800 } // 30 minutes
           )
         } else {
           throw error
