@@ -19,8 +19,8 @@ export const roadReportsSchema = Type.Object(
       longitude: Type.Number(),
     }),
     direction: Type.String(),
-    createdAt: Type.String({ format: 'date-time' }),
-    updatedAt: Type.String({ format: 'date-time' })
+    createdAt: Type.Any(),
+    updatedAt: Type.Any()
   },
   { $id: 'RoadReports', additionalProperties: false }
 )
@@ -36,9 +36,9 @@ export const roadReportsDataSchema = Type.Pick(roadReportsSchema, ['type', 'desc
 })
 export type RoadReportsData = Static<typeof roadReportsDataSchema>
 export const roadReportsDataValidator = getValidator(roadReportsDataSchema, dataValidator)
-export const roadReportsDataResolver = resolve<RoadReportsData & { createdAt: string; updatedAt: string }, HookContext<RoadReportsService>>({
-    createdAt: async () => new Date().toISOString(),
-    updatedAt: async () => new Date().toISOString()
+export const roadReportsDataResolver = resolve<RoadReportsData & { createdAt: Date; updatedAt: Date }, HookContext<RoadReportsService>>({
+    createdAt: async () => new Date(),
+    updatedAt: async () => new Date()
 })
 
 // Schema for updating existing entries
@@ -48,7 +48,7 @@ export const roadReportsPatchSchema = Type.Partial(roadReportsSchema, {
 export type RoadReportsPatch = Static<typeof roadReportsPatchSchema>
 export const roadReportsPatchValidator = getValidator(roadReportsPatchSchema, dataValidator)
 export const roadReportsPatchResolver = resolve<RoadReportsPatch, HookContext<RoadReportsService>>({
-  updatedAt: async () => new Date().toISOString()
+  updatedAt: async () => new Date()
 })
 
 // Schema for allowed query properties

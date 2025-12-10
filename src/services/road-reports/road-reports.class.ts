@@ -21,6 +21,30 @@ export class RoadReportsService<ServiceParams extends Params = RoadReportsParams
 export const getOptions = (app: Application): MongoDBAdapterOptions => {
   return {
     paginate: app.get('paginate'),
-    Model: app.get('mongodbClient').then(db => db.collection('RoadReports'))
+    Model: app.get('mongodbClient').then(async db => {
+
+      
+      const collection = db.collection('RoadReports')
+      try {
+        // Try to create the TTL index
+        await collection.createIndex(
+          { createdAt: 1 }, 
+          { expireAfterSeconds: 3600 } // 1 hour
+        )
+      } catch (error: any) {
+        // If index exists with different options, drop and recreate
+        if (error.code === 85 || error.codeName === 'IndexOptionsConflict') {
+          await collection.dropIndex('createdAt_1')
+          await collection.createIndex(
+            { createdAt: 1 }, 
+            { expireAfterSeconds: 3600 } // 1 hour
+          )
+        } else {
+          throw error
+        }
+      }
+
+      return collection
+    })
   }
 }
