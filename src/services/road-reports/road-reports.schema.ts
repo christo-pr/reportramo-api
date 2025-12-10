@@ -13,7 +13,7 @@ export const roadReportsSchema = Type.Object(
   {
     _id: ObjectIdSchema(),
     type: Type.String(),
-    description: Type.String({ nullable: true }),
+    description: Type.Optional(Type.String()),
     location: Type.Object({
       latitude: Type.Number(),
       longitude: Type.Number(),
@@ -31,7 +31,7 @@ export const roadReportsResolver = resolve<RoadReportsQuery, HookContext<RoadRep
 export const roadReportsExternalResolver = resolve<RoadReports, HookContext<RoadReportsService>>({})
 
 // Schema for creating new entries
-export const roadReportsDataSchema = Type.Pick(roadReportsSchema, ['type', 'location', 'direction'], {
+export const roadReportsDataSchema = Type.Pick(roadReportsSchema, ['type', 'description', 'location', 'direction'], {
   $id: 'RoadReportsData'
 })
 export type RoadReportsData = Static<typeof roadReportsDataSchema>
